@@ -1,7 +1,3 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import math
 import tkinter as ui
 import plistlib
@@ -9,20 +5,20 @@ from _ctypes import Array
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import keyword
 
-#
-# cryptKey = None
-# message = None
-
+# There are variables of key and message.
 global cryptKey
 global message
+
 crypted = True
-processedMessage = []
+
+# processedMessage = [] # Unused in final list
+# Resulting message variable
 returningMessage = ""
-# global listOfChars = []
 listOfChars = [chr(ch) for ch in (range(ord('a'), ord('z') + 1))]
 
 
 def open_file():
+    # Open file
     filepath = askopenfilename(
         filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
     )
@@ -30,6 +26,7 @@ def open_file():
         return
     print("File: ")
     print(filepath)
+    # Putting a message from file to global variable
     global message
     with open(filepath, "r") as input_file:
         text = input_file.read()
@@ -38,6 +35,7 @@ def open_file():
 
 
 def open_key():
+    # Open file
     filepath = askopenfilename(
         filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
     )
@@ -45,6 +43,7 @@ def open_key():
         return
     print("Key: ")
     print(filepath)
+    # Putting a key from file to global variable
     global cryptKey
     with open(filepath, "r") as input_file:
         text = input_file.read()
@@ -58,29 +57,28 @@ def cut_by_chars(text):
 
 
 def cut_by_blocks(key, text):
-    # blocksArray[(len(text)/len(key))+1] = new Array()
-    # for i in len(text):
     pass
 
 
 def select_vernam_char(key, text, count):
+    # Set current char to variable
     processedChar = text[count].lower()
 
+    # Linking to global variable
     global returningMessage
+
+    # Checking char, is it alpha?
     if (text[count]).isalpha():
         if ord('z') >= ord(text[count].lower()) >= ord('a'):
-            # print(processedChar)
-            # processedChar = ord(processedChar) + (ord(key[count/len(key)])-96)
-            # print(key[count%len(key)])
+            # Encrypted char = (crypted char + char of key) % size of [a..z] list
             processedChar = chr((((ord(processedChar) - 97) + (ord(key[count % len(key)]) - 97)) % 26) + 97)
             returningMessage = returningMessage + processedChar
             print(
-                text[count].lower(), ord(text[count].lower())-97, " ",
-                key[count % len(key)], ord(key[count % len(key)])-97, " ",
+                text[count].lower(), ord(text[count].lower()) - 97, " ",
+                key[count % len(key)], ord(key[count % len(key)]) - 97, " ",
                 processedChar, ord(processedChar) - 97, " ",
                 count
             )
-            # print(returningMessage)
         else:
             returningMessage = returningMessage + processedChar
             return
@@ -89,28 +87,28 @@ def select_vernam_char(key, text, count):
         return
 
 
-
-    # pass
-
 def select_vernam_char_inv(key, text, count):
+    # Set current char to variable
     processedChar = text[count].lower()
 
+    # Linking to global variable
     global returningMessage
+
+    # Checking char, is it alpha?
     if (text[count]).isalpha():
+        # Is alpha contained in [a..z] list? checking by ASCII codes
         if ord('z') >= ord(text[count].lower()) >= ord('a'):
-            # print(processedChar)
-            # processedChar = ord(processedChar) + (ord(key[count/len(key)])-96)
-            # print(key[count%len(key)])
             print((ord(key[count % len(key)]) - 97) % 26)
+
+            # Encrypted char = (crypted char - char of key) % size of [a..z] list
             processedChar = chr((((ord(processedChar) - 97) - (ord(key[count % len(key)]) - 97)) % 26) + 97)
             returningMessage = returningMessage + processedChar
             print(
-                text[count].lower(), ord(text[count].lower())-97, " ",
-                key[count % len(key)], ord(key[count % len(key)])-97, " ",
+                text[count].lower(), ord(text[count].lower()) - 97, " ",
+                key[count % len(key)], ord(key[count % len(key)]) - 97, " ",
                 processedChar, ord(processedChar) - 97, " ",
                 count
             )
-            # print(returningMessage)
         else:
             returningMessage = returningMessage + processedChar
             return
@@ -121,27 +119,19 @@ def select_vernam_char_inv(key, text, count):
 
 def operate_and_save():
     global message
-    # global processedMessage
     global cryptKey
-    #
-    # if (message == None):
-    #     print("Message wasn't selected.")
-    #     return
-    # if (cryptKey == None):
-    #     print("cryptKey wasn't selected.")
-    #     return
+
+    # Now check, what should programm do
     if (crypted == False):
+        # Here we're crypting message
         for i in range(len(message)):
             select_vernam_char(cryptKey, message, i)
     else:
+        # Here we're performing invertion operations
         for i in range(len(message)):
             select_vernam_char_inv(cryptKey, message, i)
 
-    # if (object.isFileCryprted == False):
-    #     print("False")
-    # else:
-    #     print("True")
-    # filepath = askopenfilename()
+    # Create new file
     filepath = asksaveasfilename(
         filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
     )
@@ -150,22 +140,18 @@ def operate_and_save():
     print("File: ")
     print(filepath)
 
+    # Put our performed message in a file
     with open(filepath, "w") as output_file:
         global returningMessage
         output_file.write(returningMessage)
-        # cryptKey = text
         print(returningMessage)
 
+    # Now we should clear to not create duplication messages
     returningMessage = ""
 
 
-
-def event_handler(event):
-    """Выводит символ, связанный с нажатой клавишей"""
-    print(event.char)
-
-
 def showClickedBTWD1():
+    # It sets variable to False
     global crypted
     crypted = False
     print("We're going to crypt file.")
@@ -173,17 +159,21 @@ def showClickedBTWD1():
 
 
 def showClickedBTWD2():
+    # It sets variable to True
     global crypted
     crypted = True
     print("We're going to encrypt file.")
     return
 
 
-
 class mainWindow:
+    # Low skills in Python don't let me use this vars.
+    # It's unused block now.
     isFileSelected = False
     isKeySelected = False
     isFileCrypted = False
+
+    # This block creates the window by methods of classes in Tkinter library.
 
     window = ui.Tk()
     window.columnconfigure(5, weight=1, minsize=25, pad=10)
@@ -198,10 +188,15 @@ class mainWindow:
     btnFileSelect = ui.Button(text="Select File", command=open_file)
     btnFileSelect.grid(row=1, column=4)
 
+    # Here we are select our method of performing message.
+    # showClickedBTWDX are methods to operate on a global variable "crypted".
+
     btnWtWeDo1 = ui.Radiobutton(text="Crypt", variable=isFileCrypted, value=True, command=showClickedBTWD1)
     btnWtWeDo1.grid(row=0, column=2)
     btnWtWeDo2 = ui.Radiobutton(text="Encrypt", variable=isFileCrypted, value=False, command=showClickedBTWD2)
     btnWtWeDo2.grid(row=1, column=2)
+
+    # Final button calculates our message by operate_and_save method, which is declared over this class.
 
     btnDo = ui.Button(text="Complete", command=operate_and_save)
     btnDo.grid(row=2, column=3)
@@ -210,18 +205,9 @@ class mainWindow:
     # lblFileInfo.pack()
     window.mainloop()
 
-    # txt_edit.insert(ui.END, text)
-    # window.title(f"Simple Text Editor - {filepath}")
-
 
 if __name__ == '__main__':
-    # global listOfChars
-    # for i in (range(ord('a'), ord('z')+1)):
-    #     listOfChars + [chr(i)]
-    #     print(chr(i))
-    # print(len(listOfChars))
+    # Create an object vernamWindow by class mainWindow
+    # which is declared upper lines.
     vernamWindow = mainWindow()
     print(cryptKey, message)
-    # print(listOfChars)
-    # window = ui.Tk()
-    # window.mainloop()
