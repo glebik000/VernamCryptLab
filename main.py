@@ -9,7 +9,7 @@ import keyword
 global cryptKey
 global message
 
-crypted = True
+encrypted = True
 
 # processedMessage = [] # Unused in final list
 # Resulting message variable
@@ -70,7 +70,7 @@ def select_vernam_char(key, text, count):
     # Checking char, is it alpha?
     if (text[count]).isalpha():
         if ord('z') >= ord(text[count].lower()) >= ord('a'):
-            # Encrypted char = (crypted char + char of key) % size of [a..z] list
+            # Encrypted char = (basic char + char of key) % size of [a..z] list
             processedChar = chr((((ord(processedChar) - 97) + (ord(key[count % len(key)]) - 97)) % 26) + 97)
             returningMessage = returningMessage + processedChar
             print(
@@ -100,7 +100,7 @@ def select_vernam_char_inv(key, text, count):
         if ord('z') >= ord(text[count].lower()) >= ord('a'):
             print((ord(key[count % len(key)]) - 97) % 26)
 
-            # Encrypted char = (crypted char - char of key) % size of [a..z] list
+            # Decrypted char = (encrypted char - char of key) % size of [a..z] list
             processedChar = chr((((ord(processedChar) - 97) - (ord(key[count % len(key)]) - 97)) % 26) + 97)
             returningMessage = returningMessage + processedChar
             print(
@@ -121,13 +121,13 @@ def operate_and_save():
     global message
     global cryptKey
 
-    # Now check, what should programm do
-    if (crypted == False):
-        # Here we're crypting message
+    # Now check, what should program do
+    if (encrypted == False):
+        # Here we're encrypting message
         for i in range(len(message)):
             select_vernam_char(cryptKey, message, i)
     else:
-        # Here we're performing invertion operations
+        # Here we're performing inversion operations
         for i in range(len(message)):
             select_vernam_char_inv(cryptKey, message, i)
 
@@ -152,17 +152,17 @@ def operate_and_save():
 
 def showClickedBTWD1():
     # It sets variable to False
-    global crypted
-    crypted = False
-    print("We're going to crypt file.")
+    global encrypted
+    encrypted = False
+    print("We're going to encrypt file.")
     return
 
 
 def showClickedBTWD2():
     # It sets variable to True
-    global crypted
-    crypted = True
-    print("We're going to encrypt file.")
+    global encrypted
+    encrypted = True
+    print("We're going to decrypt file.")
     return
 
 
@@ -189,11 +189,11 @@ class mainWindow:
     btnFileSelect.grid(row=1, column=4)
 
     # Here we are select our method of performing message.
-    # showClickedBTWDX are methods to operate on a global variable "crypted".
+    # showClickedBTWDX are methods to operate on a global variable "encrypted".
 
-    btnWtWeDo1 = ui.Radiobutton(text="Crypt", variable=isFileCrypted, value=True, command=showClickedBTWD1)
+    btnWtWeDo1 = ui.Radiobutton(text="Encrypt", variable=isFileCrypted, value=True, command=showClickedBTWD1)
     btnWtWeDo1.grid(row=0, column=2)
-    btnWtWeDo2 = ui.Radiobutton(text="Encrypt", variable=isFileCrypted, value=False, command=showClickedBTWD2)
+    btnWtWeDo2 = ui.Radiobutton(text="Decrypt", variable=isFileCrypted, value=False, command=showClickedBTWD2)
     btnWtWeDo2.grid(row=1, column=2)
 
     # Final button calculates our message by operate_and_save method, which is declared over this class.
